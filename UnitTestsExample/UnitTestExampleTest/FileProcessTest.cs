@@ -35,6 +35,25 @@ namespace UnitTestExampleTest
 
             fp.FileExists("");
         }
+        
+        [TestMethod]
+        public void FileNameNullOrEmpty_ThrowArgumentNullException_UsingTryCatch()
+        {
+            FileProcess fp = new FileProcess();
+
+            try
+            {
+                fp.FileExists("");
+            }
+            catch(ArgumentException)
+            {
+                // teste teve sucesso.
+                return;
+            }
+            
+            Assert.Fail("Falha esperada");
+
+        }
 
     }
 }
