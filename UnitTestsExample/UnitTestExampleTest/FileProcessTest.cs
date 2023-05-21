@@ -15,7 +15,6 @@ namespace UnitTestExampleTest
         public TestContext TestContext { get; set; } 
 
         #region Test Initialize e Cleanup
-
         [TestInitialize]
         public void TestInitialize()
         {
@@ -42,7 +41,6 @@ namespace UnitTestExampleTest
                 }
             }
         }
-
         #endregion
 
         public void setGoodFileName()
@@ -56,6 +54,8 @@ namespace UnitTestExampleTest
         }
 
         [TestMethod]
+        [Description("Check to see if a file exists")]
+        [Owner("LSaints")]
         public void FileNameDoesExists()
         {
             FileProcess fp = new FileProcess();
@@ -68,6 +68,8 @@ namespace UnitTestExampleTest
         }
 
         [TestMethod]
+        [Description("Check to see if a file NOT exists")]
+        [Owner("LSaints")]
         public void FileNameDoesNotExists() 
         {
             FileProcess fp = new FileProcess();
@@ -79,6 +81,7 @@ namespace UnitTestExampleTest
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
+        [Owner("LSaints")]
         public void FileNameNullOrEmpty_ThrowArgumentNullException()
         {
             FileProcess fp = new FileProcess();
@@ -87,6 +90,7 @@ namespace UnitTestExampleTest
         }
         
         [TestMethod]
+        [Owner("LSaints")]
         public void FileNameNullOrEmpty_ThrowArgumentNullException_UsingTryCatch()
         {
             FileProcess fp = new FileProcess();
