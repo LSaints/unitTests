@@ -12,7 +12,38 @@ namespace UnitTestExampleTest
 
         private const string BAD_FILE_NAME = @"C:\Windows\regedit1.exe";
         private string _GoodFileName;
-        public TestContext TestContext { get; set; }
+        public TestContext TestContext { get; set; } 
+
+        #region Test Initialize e Cleanup
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            if(TestContext.TestName == "FileNameDoesExists")
+            {
+                setGoodFileName();
+                if (!string.IsNullOrEmpty(_GoodFileName)) 
+                {
+                    TestContext.WriteLine($"Creating file: {_GoodFileName}");
+                    File.AppendAllText(_GoodFileName, "Some Text");
+                }
+            }
+        }
+
+        [TestCleanup]
+        public void TestCleanup() 
+        {
+            if(TestContext.TestName == "FileNameDoesExists")
+            {
+                if (!string.IsNullOrEmpty(_GoodFileName))
+                {
+                    TestContext.WriteLine($"Deleting file: {_GoodFileName}");
+                    File.Delete(_GoodFileName);
+                }
+            }
+        }
+
+        #endregion
 
         public void setGoodFileName()
         {
@@ -30,13 +61,8 @@ namespace UnitTestExampleTest
             FileProcess fp = new FileProcess();
             bool fromCall;
 
-            setGoodFileName();
-            TestContext.WriteLine($"Creating file: {_GoodFileName}");
-            File.AppendAllText(_GoodFileName, "Some Text");
             TestContext.WriteLine($"Testing file: {_GoodFileName}");
             fromCall = fp.FileExists(_GoodFileName);
-            TestContext.WriteLine($"Deleting file: {_GoodFileName}");
-            File.Delete(_GoodFileName);
 
             Assert.IsTrue(fromCall);
         }
