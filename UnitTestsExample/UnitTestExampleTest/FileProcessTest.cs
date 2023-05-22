@@ -53,9 +53,28 @@ namespace UnitTestExampleTest
             }
         }
 
+        private const string FILE_NAME = @"FileToDeploy.txt";
+
+        [TestMethod]
+        [DeploymentItem(FILE_NAME)]
+        public void FileNameDoesExistsUsingDeploymentItem()
+        {
+            FileProcess fp = new FileProcess();
+            string fileName;
+            bool fromCall;
+
+            fileName = $@"{TestContext.DeploymentDirectory}\{FILE_NAME}";
+            TestContext.WriteLine($"Checking file: {fileName}");
+            fromCall = fp.FileExists(fileName);
+
+            Assert.IsTrue(fromCall);
+        }
+
         [TestMethod]
         [Description("Check to see if a file exists")]
         [Owner("LSaints")]
+        [Priority(0)]
+        [TestCategory("NoException")]
         public void FileNameDoesExists()
         {
             FileProcess fp = new FileProcess();
@@ -70,6 +89,8 @@ namespace UnitTestExampleTest
         [TestMethod]
         [Description("Check to see if a file NOT exists")]
         [Owner("LSaints")]
+        [Priority(1)]
+        [TestCategory("NoException")]
         public void FileNameDoesNotExists() 
         {
             FileProcess fp = new FileProcess();
@@ -82,6 +103,8 @@ namespace UnitTestExampleTest
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         [Owner("LSaints")]
+        [Priority(1)]
+        [TestCategory("Exception")]
         public void FileNameNullOrEmpty_ThrowArgumentNullException()
         {
             FileProcess fp = new FileProcess();
@@ -91,6 +114,8 @@ namespace UnitTestExampleTest
         
         [TestMethod]
         [Owner("LSaints")]
+        [Priority(1)]
+        [TestCategory("Exception")]
         public void FileNameNullOrEmpty_ThrowArgumentNullException_UsingTryCatch()
         {
             FileProcess fp = new FileProcess();
