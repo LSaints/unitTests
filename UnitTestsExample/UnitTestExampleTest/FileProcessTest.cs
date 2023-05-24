@@ -18,7 +18,7 @@ namespace UnitTestExampleTest
         [TestInitialize]
         public void TestInitialize()
         {
-            if(TestContext.TestName == "FileNameDoesExists")
+            if(TestContext.TestName.StartsWith("FileNameDoesExists"))
             {
                 setGoodFileName();
                 if (!string.IsNullOrEmpty(_GoodFileName)) 
@@ -32,7 +32,7 @@ namespace UnitTestExampleTest
         [TestCleanup]
         public void TestCleanup() 
         {
-            if(TestContext.TestName == "FileNameDoesExists")
+            if (TestContext.TestName.StartsWith("FileNameDoesExists"))
             {
                 if (!string.IsNullOrEmpty(_GoodFileName))
                 {
@@ -42,6 +42,32 @@ namespace UnitTestExampleTest
             }
         }
         #endregion
+
+        [TestMethod]
+        [Owner("MateusL")]
+        [DataSource("System.Data.SqlClient", 
+            @"Data Source=DESKTOP-LRU11SV;Initial Catalog=TesteUnitarioDB;Integrated Security=True",
+            "FileProcessTest", DataAccessMethod.Sequential)]
+        public void FileExistsTestFromDB()
+        {
+            FileProcess fp = new FileProcess();
+            string fileName;
+            bool expectedValue, causesException, fromCall;
+
+            fileName = TestContext.DataRow["FileName"].ToString();
+            expectedValue = Convert.ToBoolean(TestContext.DataRow["ExpectedValue"]);
+            causesException = Convert.ToBoolean(TestContext.DataRow["CausesException"]);
+
+            try
+            {
+                fromCall = fp.FileExists(fileName);
+                Assert.AreEqual(expectedValue, fromCall, $"File: {fileName} has failed. METHOD: FileExistsTestFromDB");
+            } 
+            catch (ArgumentException ex) 
+            {
+                Assert.IsTrue(causesException, ex.Message);
+            }
+        }
 
         public void setGoodFileName()
         {
@@ -84,6 +110,30 @@ namespace UnitTestExampleTest
             fromCall = fp.FileExists(_GoodFileName);
 
             Assert.IsTrue(fromCall);
+        }
+
+        [TestMethod]
+        public void FileNameDoesExistsSimpleMessage()
+        {
+            FileProcess fp = new FileProcess();
+            bool fromCall;
+
+            TestContext.WriteLine($"Testing file: {_GoodFileName}");
+            fromCall = fp.FileExists(_GoodFileName);
+
+            Assert.IsFalse(fromCall, "File Does Not Exist.");
+        }
+
+        [TestMethod]
+        public void FileNameDoesExistsMessageFormatting()
+        {
+            FileProcess fp = new FileProcess();
+            bool fromCall;
+
+            TestContext.WriteLine($"Testing file: {_GoodFileName}");
+            fromCall = fp.FileExists(_GoodFileName);
+
+            Assert.IsFalse(fromCall, "File '{0}' Does Not Exist.", _GoodFileName);
         }
 
         [TestMethod]
